@@ -535,6 +535,24 @@
           <li>Finalized facility CAD assembly in SolidWorks within spatial laboratory constraints; prepared high-pressure components for DFMA, supplier sourcing, and manufacturing quotes.</li>
         </ul>
         <!-- PDF Viewer for Shock Tunnel Tab -->
+        <!-- 3D Model Viewer for Full CubeSat Assembly -->
+        <div class="model-wrapper">
+          <h4 style="margin-top: 0;">Full Facility Assembly Summer 2026</h4>
+          <model-viewer src="FullAssemblySummerRealistic-compressed.glb" camera-controls auto-rotate shadow-intensity="1" exposure="1.2"></model-viewer>
+          <div class="description">
+            <h2>About This Hardware</h2>
+            <p>This is the full facility assembly as of the end of summer 2026. I put this together to help visualize the facility in the lab space, although the room model is not included on this page due to confidentiality constraints. Almost everything is modeled here aside from small pieces such as bolts and o-rings. The nozzle is a placeholder and thus has no supports. I am iterating on operating conditions and once I find one I consider the best in terms of stagnation temperature and pressure I will adjust the nozzle accordingly using NASA CEA and FUN3D. </p>
+          </div>
+        </div>
+        <div class="model-wrapper">
+          <h4 style="margin-top: 0;">Driver Tube FEA Analysis</h4>
+          <iframe src="DriverFEA.png" class="pdf-viewer" title="Shock Tunnel Spring Report PDF Document"></iframe>
+          <div class="description">
+            <h2>About This Image</h2>
+            <p>This shows the results of FEA on the driver tube. The facility is designed with a max pressure to be 25 MPa, and since this will be dynamic, a dynamic load factor of 2 was applied here. With 50 MPa of pressure on the inside, the tube holds up very well, with a calculated factor of safety of 4.6, above the target of 4. </p>
+            <a href="FPRSTSpringReport.pdf" class="btn btn-ghost" download>Download Design Report (PDF)</a>
+          </div>
+        </div>
         <div class="model-wrapper">
           <h4 style="margin-top: 0;">Spring 2026 Design Report</h4>
           <iframe src="FPRSTSpringReport.pdf" class="pdf-viewer" title="Shock Tunnel Spring Report PDF Document"></iframe>
