@@ -272,6 +272,27 @@
       height: 260px;
     }
   }
+  /* Side-by-Side Image Grid */
+  .image-grid-two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .image-grid-two img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+  }
+
+  @media (max-width: 600px) {
+    .image-grid-two {
+      grid-template-columns: 1fr;
+    }
+  }
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(5px); }
     to { opacity: 1; transform: translateY(0); }
@@ -454,7 +475,34 @@
           <li>Developed MATLAB scripts to parametrically iterate projectile geometries and analyzed CFD performance in ANSYS Fluent.</li>
           <li>Fabricated 3D-printed models to experimentally validate shock angles and surface thermal loads in a Mach 6 Ludwieg wind tunnel.</li>
         </ul>
-        
+        <!-- Side-by-Side Image Gallery -->
+        <div class="model-wrapper">
+          <h4 style="margin-top: 0;">Schlieren Wind Tunnel Validation</h4>
+          
+          <div class="image-grid-two">
+            <img src="LogStreamwiseSchlieren.png" alt="ANSYS Fluent Results">
+            <img src="SchlierenMarked.png" alt="Wind Tunnel Results">
+          </div>
+
+          <div class="description">
+            <h2>About These Images</h2>
+            <p>Replace this text with your detailed explanation of what is shown in both pictures, including any testing data, key features, or design highlights.</p>
+          </div>
+        </div>
+        <!-- Side-by-Side Image Gallery -->
+        <div class="model-wrapper">
+          <h4 style="margin-top: 0;">FLIR Wind Tunnel Validation</h4>
+          
+          <div class="image-grid-two">
+            <img src="wallTemperature.png" alt="ANSYS Fluent Wall Temperature Results">
+            <img src="Run1.jpg" alt="Wind Tunnel FLIR Results">
+          </div>
+
+          <div class="description">
+            <h2>About These Images</h2>
+            <p>Replace this text with your detailed explanation of what is shown in both pictures, including any testing data, key features, or design highlights.</p>
+          </div>
+        </div>
         <div class="model-wrapper">
           <h4 style="margin-top: 0;">2025 Projectile Final Design</h4>
           <model-viewer src="COMAssembly.glb" camera-controls auto-rotate shadow-intensity="1" exposure="1.2"></model-viewer>
@@ -473,6 +521,7 @@
             <a href="DesignReport.pdf" class="btn btn-ghost" download>Download Design Report (PDF)</a>
           </div>
         </div>
+        
       </div>
 
       <!-- Tab Content: Shock Tunnel -->
