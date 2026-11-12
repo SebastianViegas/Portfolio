@@ -319,6 +319,13 @@
   .spec-table th { font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
   .spec-table td { color: #cccccc; }
   @media (max-width: 600px) { .tab-content { padding: 1.25rem; } .nz-grid { grid-template-columns: 1fr; } .spec-table { font-size: 0.78rem; } }
+  .nz-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; margin-bottom: 1rem; }
+  .nz-stats div { background: #141414; border: 1px solid var(--border-color); border-radius: 4px; padding: 0.75rem 1rem; }
+  .nz-stats strong { display: block; font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 600; }
+  .nz-stats span { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: var(--text-secondary); }
+  .nz-plots { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .nz-plots img { width: 100%; height: auto; display: block; background: #ffffff; border-radius: 4px; border: 1px solid var(--border-color); }
+  @media (max-width: 600px) { .nz-plots { grid-template-columns: 1fr; } }
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(5px); }
     to { opacity: 1; transform: translateY(0); }
@@ -593,7 +600,7 @@
           <div class="description">
             <h2>Two Generations of Nozzle</h2>
             <p>The nozzle expands the reflected-shock reservoir gas (about 4700 K and 23 MPa in air) to the test condition. My first design was a contoured nozzle generated with Sivells' method-of-characteristics code (CONTUR, Fortran) with a boundary-layer correction, which I post-processed in MATLAB into SolidWorks-ready wall coordinates. That contour was 3.5 m long with a ⌀24.7 mm throat and was split into two Inconel throat pieces and three flanged steel sections.</p>
-            <p>For the current revision I moved to a 6° half-angle conical nozzle with a smaller ⌀8.5 mm throat. It reaches an area ratio of 2390 (about Mach 13.7 for an ideal γ = 1.4 gas, roughly Mach 10 with real-gas effects) in 1.94 m, a little over half the length of the contour. A straight cone is also far simpler to build: rolled and welded plate instead of a machined Inconel contour. The figure above compares the two to scale.</p>
+            <p>For the current revision I moved to a 6° half-angle conical nozzle with a smaller ⌀8.5 mm throat. It reaches an area ratio of 2390 in 1.94 m, which gives Mach 10.0 on the axis in viscous CFD (an ideal γ = 1.4 gas would reach Mach 13.7), a little over half the length of the contour. A straight cone is also far simpler to build: rolled and welded plate instead of a machined Inconel contour. The figure above compares the two to scale.</p>
           </div>
         </div>
 
@@ -623,6 +630,27 @@
             <h2>About This Design</h2>
             <p>The divergent section is made in three pieces joined by spigot-and-counterbore joints. Each spigot face seats metal-to-metal on its counterbore floor, so the bores close flush with no cavity in the flow path, and an H7/g6 register holds concentricity to within 0.05 mm. The faces are sized to clamp Alloy 718 metal C-ring seals. The last piece has a ⌀440 mm hard-anodized cylindrical OD that gives 650 mm of sliding-seal surface into the test section.</p>
             <p>I sized every part for 1.0 MPa internal pressure and full vacuum with a factor of safety of 4 on minimum yield, following ASME Section VIII Division 1 methods: UG-27 and UG-32 for the shells, UG-28/UG-33 for vacuum collapse, and Appendix 2 for flange stresses, rotation, and bolt loads. Welded regions use the as-welded 6061 strength, and the bolt preload covers ±25% torque scatter while keeping a residual contact force on the sealing land.</p>
+          </div>
+        </div>
+
+        <div class="model-wrapper nz-case">
+          <h4 style="margin-top: 0;">Flow Validation: Quasi-1D vs. Viscous CFD</h4>
+          <div class="nz-stats">
+            <div><strong>10.01</strong><span>Exit axis Mach (Eilmer)</span></div>
+            <div><strong>306 mm</strong><span>Core flow ⌀ (Mach ±1%)</span></div>
+            <div><strong>30.5 mm</strong><span>Exit boundary layer δ<sub>99</sub></span></div>
+            <div><strong>0.979</strong><span>Quasi-1D / CFD calibration</span></div>
+          </div>
+          <div class="nz-plots">
+            <a href="NozzleMachVsAreaRatio.png" target="_blank" rel="noopener"><img src="NozzleMachVsAreaRatio.png" alt="Mach number vs area ratio: nenzf1d compared with Eilmer CFD axis, using geometric and effective area ratio" loading="lazy"></a>
+            <a href="NozzleAxisNenzf1dVsCFD.png" target="_blank" rel="noopener"><img src="NozzleAxisNenzf1dVsCFD.png" alt="Temperature, pressure and species mass fractions along the axis: nenzf1d compared with CFD" loading="lazy"></a>
+            <a href="NozzleBoundaryLayer.png" target="_blank" rel="noopener"><img src="NozzleBoundaryLayer.png" alt="Boundary layer thickness and displacement thickness along the nozzle against wall radius" loading="lazy"></a>
+            <a href="NozzleExitProfiles.png" target="_blank" rel="noopener"><img src="NozzleExitProfiles.png" alt="Exit plane radial profiles of Mach, pressure, temperature, velocity, pitot pressure and species" loading="lazy"></a>
+          </div>
+          <div class="description">
+            <h2>About These Results</h2>
+            <p>I checked the conical contour two ways. First, a quasi-1D finite-rate chemistry model (nenzf1d) expands the 4700 K reservoir gas through the nozzle with no boundary layer: it predicts Mach 10.3 at the 2390 area ratio, with the chemistry freezing early so the exit carries about 7% NO by mass. Second, a viscous axisymmetric simulation in Eilmer resolves the wall boundary layer. Along the axis the two agree closely in temperature, pressure, and species, and the CFD exit Mach is 10.01.</p>
+            <p>The difference comes from the boundary layer. It grows to 30.5 mm (15% of the exit radius) with a 13.7 mm displacement thickness, which cuts the effective area ratio from 2390 to 2083. Plotted against that effective area ratio, the CFD axis Mach falls right on the nenzf1d curve, so a 0.979 calibration factor lets the much faster quasi-1D model stand in for CFD when I iterate on operating conditions. At the exit the uniform core is 306 mm across within ±1% Mach, and 354 mm within ±5% pitot pressure, which sets the usable test-model size. Click any plot to enlarge it.</p>
           </div>
         </div>
 
