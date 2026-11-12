@@ -565,7 +565,7 @@
         <ul>
           <li>Modeled free-piston shock dynamics and tunnel operational boundaries using Queensland L1d4 and NASA CEA to predict thermochemical expansion through the nozzle at static conditions ranging from 5-10 MPa and 1850-3000 K.</li>
           <li>Performed high-fidelity 2D axisymmetric CFD simulations with over 2 million cells as small as 1e-6 m in ANSYS Fluent to analyze exit conditions and boundary layer behavior across nozzle contours.</li>
-          <li>Ran FEA simulations to ensure adequate factor of safety under extreme dynamic loads for both static and dynamic parts.</li>
+          <li>Ran FEA simulations in SolidWorks Simulation, calibrated against hand calculations, to verify a factor of safety of 4 under 50 MPa dynamic loads on the driver tube and shock tube flange joint; iterated flange hub geometry and specified stud and flange materials to close the margin.</li>
           <li>Finalized facility CAD assembly in SolidWorks within spatial laboratory constraints; prepared high-pressure components for DFMA, supplier sourcing, and manufacturing quotes.</li>
         </ul>
         <!-- PDF Viewer for Shock Tunnel Tab -->
@@ -689,12 +689,18 @@
         </div>
 
         <div class="model-wrapper">
-          <h4 style="margin-top: 0;">Driver Tube FEA Analysis</h4>
-          <iframe src="DriverFEA.png" class="pdf-viewer" title="Shock Tunnel Spring Report PDF Document"></iframe>
+          <h4 style="margin-top: 0;">Structural Survivability: Driver Tube &amp; Shock Tube Flange FEA</h4>
+          <iframe src="DriverFEA.png" class="pdf-viewer" title="Driver tube FEA result"></iframe>
           <div class="description">
-            <h2>About This Image</h2>
-            <p>This shows the results of FEA on the driver tube. The facility is designed with a max pressure to be 25 MPa, and since this will be dynamic, a dynamic load factor of 2 was applied here. With 50 MPa of pressure on the inside, the tube holds up very well, with a calculated factor of safety of 4.6, above the target of 4. </p>
-    
+            <h2>About This Analysis</h2>
+            <p>Every part that holds pressure in the tunnel has to survive repeated shock loading. The facility is designed for a max pressure of 25 MPa, and since the loading is dynamic I applied a dynamic load factor of 2, so each part is checked at 50 MPa against a target factor of safety of 4 on yield. For each part I predicted the stresses by hand first, built the simplest SolidWorks Simulation model that could be checked against that prediction, and only then trusted the model where hand calculations can't reach.</p>
+            <ul>
+              <li><strong>Driver tube (shown above):</strong> quarter-symmetry model with 50 MPa on the bore and a 700 kN end load. The reaction force and bore stresses matched my hand calculations, and adding the threads back in changed the result negligibly. The FEA gives a factor of safety of 4.6, above the target of 4.</li>
+              <li><strong>Shock tube flange joint:</strong> a 36&deg; cyclic-symmetry sector of two 4140 Q&amp;T flanges with preloaded 1-8 UNC studs, frictionless contact and the C-ring seal load. I calibrated the model against the Lam&eacute; thick-cylinder solution (within 8%) and refined the mesh until the hub fillet peak converged (232 &rarr; 257 &rarr; 256 MPa).</li>
+              <li><strong>Geometry iteration:</strong> I tested three hub designs. A tapered hub with a smaller R3 fillet raised the fillet peak from 256 to 361 MPa, so I kept a straight hub with R9 fillets on a &#8960;217 bolt circle, the largest fillet that still clears a socket on the nuts.</li>
+              <li><strong>Joint behaviour:</strong> at 50 MPa the seal land stays clamped with 0.67 of the pressure end load in reserve (the hand calculation assumed 0.5), and the flange faces close 0.205 mm of a 0.30 mm clearance.</li>
+              <li><strong>Closing the margin:</strong> where the model fell below 4, the limit was material rather than geometry. I specified ASTM A354 BD studs, raising the stud factor of safety from 3.5 to 4.4 with no change in size or preload, and wrote a flange purchase spec requiring certified yield tested at the actual forging section, with 4340 Q&amp;T as the fallback.</li>
+            </ul>
           </div>
         </div>
         <div class="model-wrapper">
