@@ -319,6 +319,22 @@
   .spec-table th { font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
   .spec-table td { color: #cccccc; }
   @media (max-width: 600px) { .tab-content { padding: 1.25rem; } .nz-grid { grid-template-columns: 1fr; } .spec-table { font-size: 0.78rem; } }
+  /* Shock tunnel sub-sections */
+  .st-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; margin: 1.5rem 0 0.5rem; }
+  .st-summary div { background: #1a1a1a; border: 1px solid var(--border-color); border-radius: 4px; padding: 0.75rem 1rem; }
+  .st-summary strong { display: block; font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; font-weight: 600; }
+  .st-summary span { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: var(--text-secondary); }
+  .subtab-buttons { display: flex; flex-wrap: wrap; gap: 6px; margin: 2rem 0 1.5rem; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); }
+  .subtab-btn { background: none; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 6px 14px; border-radius: 999px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; transition: all 0.2s ease; }
+  .subtab-btn:hover { color: var(--text-primary); border-color: var(--text-secondary); }
+  .subtab-btn.active { color: var(--bg-color); background-color: var(--accent-color); border-color: var(--accent-color); }
+  .subtab-panel { display: none; animation: fadeIn 0.3s ease; }
+  .subtab-panel.active { display: block; }
+  .subtab-intro { color: var(--text-secondary); margin-bottom: 1.5rem; max-width: 70ch; }
+  .st-flow { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: stretch; margin-bottom: 1rem; list-style: none; padding-left: 0 !important; counter-reset: stflow; }
+  .st-flow li { counter-increment: stflow; flex: 1 1 170px; background: #141414; border: 1px solid var(--border-color); border-radius: 4px; padding: 0.75rem 1rem; margin: 0 !important; font-size: 0.85rem; color: var(--text-secondary); }
+  .st-flow li::before { content: counter(stflow, decimal-leading-zero); display: block; font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--accent-color); }
+  .st-flow li strong { display: block; color: var(--text-primary); font-family: 'Space Grotesk', sans-serif; font-size: 1rem; margin-bottom: 0.2rem; }
   .nz-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; margin-bottom: 1rem; }
   .nz-stats div { background: #141414; border: 1px solid var(--border-color); border-radius: 4px; padding: 0.75rem 1rem; }
   .nz-stats strong { display: block; font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 600; }
@@ -568,150 +584,243 @@
           <li>Ran FEA simulations in SolidWorks Simulation, calibrated against hand calculations, to verify a factor of safety of 4 under 50 MPa dynamic loads on the driver tube and shock tube flange joint; iterated flange hub geometry and specified stud and flange materials to close the margin.</li>
           <li>Finalized facility CAD assembly in SolidWorks within spatial laboratory constraints; prepared high-pressure components for DFMA, supplier sourcing, and manufacturing quotes.</li>
         </ul>
-        <!-- PDF Viewer for Shock Tunnel Tab -->
-        <!-- 3D Model Viewer for Full CubeSat Assembly -->
-        <div class="model-wrapper">
-          <h4 style="margin-top: 0;">Full Facility Assembly Summer 2026</h4>
-          <model-viewer src="FullAssemblySummerRealistic-compressed.glb" camera-controls auto-rotate shadow-intensity="1" exposure="1.2"></model-viewer>
-          <div class="description">
-            <h2>About This Hardware</h2>
-            <p>This is the full facility assembly as of the end of summer 2026. I put this together to help visualize the facility in the lab space, although the room model is not included on this page due to confidentiality constraints. Almost everything is modeled here aside from small pieces such as bolts and o-rings. The nozzle in this model is an earlier placeholder without supports; the current conical nozzle design is detailed in the case study below.</p>
+        <div class="st-summary">
+          <div><strong>Mach 10</strong><span>Nozzle exit, viscous CFD</span></div>
+          <div><strong>4700 K · 22 MPa</strong><span>Reflected-shock reservoir</span></div>
+          <div><strong>88.3% He</strong><span>Tailored driver gas</span></div>
+          <div><strong>1.8 ms</strong><span>Predicted test time (L1d4)</span></div>
+          <div><strong>~1.3 MN</strong><span>Recoil load at piston launch</span></div>
+        </div>
+
+        <div class="subtab-buttons" role="tablist" aria-label="Shock tunnel sub-sections">
+          <button class="subtab-btn active" onclick="openSubTab(event, 'st-overview')" role="tab">Overview</button>
+          <button class="subtab-btn" onclick="openSubTab(event, 'st-conditions')" role="tab">Design Conditions</button>
+          <button class="subtab-btn" onclick="openSubTab(event, 'st-recoil')" role="tab">Driver &amp; Recoil</button>
+          <button class="subtab-btn" onclick="openSubTab(event, 'st-nozzle')" role="tab">Nozzle</button>
+          <button class="subtab-btn" onclick="openSubTab(event, 'st-structures')" role="tab">Structures</button>
+          <button class="subtab-btn" onclick="openSubTab(event, 'st-report')" role="tab">Report</button>
+        </div>
+
+        <div id="st-overview" class="subtab-panel active" role="tabpanel">
+          <p class="subtab-intro">A free-piston reflected shock tunnel compresses a light driver gas with a heavy piston, bursts a diaphragm to send a strong shock down the shock tube, and expands the shock-heated reservoir through a hypersonic nozzle for a few milliseconds of flight-enthalpy flow.</p>
+          <!-- PDF Viewer for Shock Tunnel Tab -->
+          <!-- 3D Model Viewer for Full CubeSat Assembly -->
+          <div class="model-wrapper">
+            <h4 style="margin-top: 0;">Full Facility Assembly Summer 2026</h4>
+            <model-viewer src="FullAssemblySummerRealistic-compressed.glb" camera-controls auto-rotate shadow-intensity="1" exposure="1.2"></model-viewer>
+            <div class="description">
+              <h2>About This Hardware</h2>
+              <p>This is the full facility assembly as of the end of summer 2026. I put this together to help visualize the facility in the lab space, although the room model is not included on this page due to confidentiality constraints. Almost everything is modeled here aside from small pieces such as bolts and o-rings. The nozzle in this model is an earlier placeholder without supports; the current conical nozzle design is detailed in the case study below.</p>
+            </div>
           </div>
         </div>
 
-        <!-- ============ Hypersonic Nozzle Case Study ============ -->
-        <div class="model-wrapper nz-case">
-          <p class="section-label" style="margin-bottom: 0.25rem;">CASE STUDY</p>
-          <h4 style="margin-top: 0;">Hypersonic Nozzle: From Contoured to Conical</h4>
-          <svg class="nz-fig" viewBox="-120 -360 3760 840" role="img" aria-label="To-scale comparison of the earlier contoured nozzle and the current 6 degree conical nozzle">
-  <line x1="-80" y1="0" x2="3600" y2="0" class="nz-axis"/>
-  <polyline points="0,-12.4 51,-21.7 102,-33.9 152,-46.3 203,-58.2 254,-69.4 305,-79.7 356,-89.3 406,-98.3 457,-106.6 508,-114.5 559,-122.0 610,-129.0 660,-135.6 711,-141.9 762,-147.8 813,-153.5 864,-158.9 914,-164.0 965,-168.9 1016,-173.6 1067,-178.0 1118,-182.2 1168,-186.3 1219,-190.1 1270,-193.8 1321,-197.3 1372,-200.7 1422,-203.9 1473,-207.0 1524,-209.9 1575,-212.7 1626,-215.3 1676,-217.9 1727,-220.3 1778,-222.6 1829,-224.8 1880,-226.9 1930,-228.9 1981,-230.8 2032,-232.6 2083,-234.3 2134,-235.9 2184,-237.4 2235,-238.8 2286,-240.2 2337,-241.4 2388,-242.6 2438,-243.7 2489,-244.8 2540,-245.7 2591,-246.6 2642,-247.4 2692,-248.2 2743,-248.9 2794,-249.5 2845,-250.0 2896,-250.5 2946,-250.9 2997,-251.3 3048,-251.6 3099,-251.9 3150,-252.1 3200,-252.3 3251,-252.5 3302,-252.7 3353,-252.9 3404,-253.1 3454,-253.3 3505,-253.5 3505,-253.5" class="nz-old"/>
-  <polyline points="0,12.4 51,21.7 102,33.9 152,46.3 203,58.2 254,69.4 305,79.7 356,89.3 406,98.3 457,106.6 508,114.5 559,122.0 610,129.0 660,135.6 711,141.9 762,147.8 813,153.5 864,158.9 914,164.0 965,168.9 1016,173.6 1067,178.0 1118,182.2 1168,186.3 1219,190.1 1270,193.8 1321,197.3 1372,200.7 1422,203.9 1473,207.0 1524,209.9 1575,212.7 1626,215.3 1676,217.9 1727,220.3 1778,222.6 1829,224.8 1880,226.9 1930,228.9 1981,230.8 2032,232.6 2083,234.3 2134,235.9 2184,237.4 2235,238.8 2286,240.2 2337,241.4 2388,242.6 2438,243.7 2489,244.8 2540,245.7 2591,246.6 2642,247.4 2692,248.2 2743,248.9 2794,249.5 2845,250.0 2896,250.5 2946,250.9 2997,251.3 3048,251.6 3099,251.9 3150,252.1 3200,252.3 3251,252.5 3302,252.7 3353,252.9 3404,253.1 3454,253.3 3505,253.5 3505,253.5" class="nz-old"/>
-  <polygon points="0,-4.2 1936.4,-207.8 1936.4,207.8 0,4.2" class="nz-new"/>
-  <line x1="250" y1="-71" x2="250" y2="215" class="nz-joint"/><text x="250" y="255" class="nz-lab" text-anchor="middle">Joint A</text>
-<line x1="1286.4" y1="-179" x2="1286.4" y2="215" class="nz-joint"/><text x="1286.4" y="255" class="nz-lab" text-anchor="middle">Joint B</text>
-
-  <text x="1966.4" y="-150" class="nz-lab">Exit ⌀415.6 mm</text>
-  <text x="3505" y="-280" class="nz-lab" text-anchor="end">Exit ⌀507 mm</text>
-  <line x1="0" y1="380" x2="1936.4" y2="380" class="nz-dim"/><text x="968.2" y="440" class="nz-lab" text-anchor="middle">1936 mm (current)</text>
-  <line x1="0" y1="300" x2="3505" y2="300" class="nz-dim nz-dim-old"/><text x="2700" y="355" class="nz-lab nz-lab-old" text-anchor="middle">3505 mm (earlier contour)</text>
-  <text x="0" y="100" class="nz-lab">Throat</text>
-</svg>
-<div class="nz-legend"><span><i class="nz-key nz-key-new"></i>Current: 6° cone, ⌀8.5 mm throat, area ratio 2390</span><span><i class="nz-key nz-key-old"></i>Earlier: Sivells MOC contour, ⌀24.7 mm throat</span></div>
-          <div class="description">
-            <h2>Two Generations of Nozzle</h2>
-            <p>The nozzle expands the reflected-shock reservoir gas (about 4700 K and 23 MPa in air) to the test condition. My first design was a contoured nozzle generated with Sivells' method-of-characteristics code (CONTUR, Fortran) with a boundary-layer correction, which I post-processed in MATLAB into SolidWorks-ready wall coordinates. That contour was 3.5 m long with a ⌀24.7 mm throat and was split into two Inconel throat pieces and three flanged steel sections.</p>
-            <p>For the current revision I moved to a 6° half-angle conical nozzle with a smaller ⌀8.5 mm throat. It reaches an area ratio of 2390 in 1.94 m, which gives Mach 10.0 on the axis in viscous CFD (an ideal γ = 1.4 gas would reach Mach 13.7), a little over half the length of the contour. A straight cone is also far simpler to build: rolled and welded plate instead of a machined Inconel contour. The figure above compares the two to scale.</p>
+        <div id="st-conditions" class="subtab-panel" role="tabpanel">
+          <p class="subtab-intro">Choosing the fill pressures, driver gas and burst pressure that put the reservoir at a Mach 10 flight condition.</p>
+          <div class="model-wrapper nz-case">
+            <p class="section-label" style="margin-bottom: 0.25rem;">CASE STUDY</p>
+            <h4 style="margin-top: 0;">Designing the Tunnel's Operating Condition</h4>
+            <ol class="st-flow">
+              <li><strong>Target</strong>Pick the flight Mach number and altitude to replicate.</li>
+              <li><strong>NASA CEA (rocket)</strong>Iterate reservoir T<sub>5</sub>, P<sub>5</sub> and area ratio until the expanded flow matches the target.</li>
+              <li><strong>NASA CEA (shock)</strong>Find the initial shock tube pressure P<sub>1</sub> and incident shock speed that give that reservoir.</li>
+              <li><strong>PITOT3</strong>Iterate helium fraction, burst pressure P<sub>4</sub> and initial driver fill until p<sub>5d</sub>/p<sub>5</sub> = 1 (tailored).</li>
+              <li><strong>L1d4</strong>Add viscous effects, losses and the piston to settle the final fill pressures and test time.</li>
+              <li><strong>nenzf1d / Eilmer</strong>Expand the reservoir through the nozzle to check the exit flow.</li>
+            </ol>
+            <div class="nz-grid">
+              <table class="spec-table">
+                <thead><tr><th>Fill / burst</th><th>Value</th></tr></thead>
+                <tbody>
+                  <tr><td>Reservoir pressure P<sub>r</sub></td><td>4.1 MPa</td></tr>
+                  <tr><td>Initial driver pressure P<sub>4i</sub></td><td>195 kPa</td></tr>
+                  <tr><td>Driver helium fraction x<sub>He</sub></td><td>88.3%</td></tr>
+                  <tr><td>Primary burst pressure P<sub>4</sub></td><td>24.5 MPa</td></tr>
+                  <tr><td>Shock tube fill P<sub>1</sub> (air)</td><td>35.2 kPa</td></tr>
+                  <tr><td>Secondary diaphragm</td><td>&gt; 5 MPa</td></tr>
+                </tbody>
+              </table>
+              <table class="spec-table">
+                <thead><tr><th>Result</th><th>Value</th></tr></thead>
+                <tbody>
+                  <tr><td>Reservoir P<sub>5</sub></td><td>22 MPa</td></tr>
+                  <tr><td>Reservoir T<sub>5</sub></td><td>4700 K</td></tr>
+                  <tr><td>Nozzle exit Mach (Eilmer)</td><td>10.01</td></tr>
+                  <tr><td>Available test time</td><td>1.8 ms</td></tr>
+                <tr><td>Altitude replicated</td><td>~46 km (40 km target)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- TODO: Sebastian's design-condition images go here -->
+            <div class="description">
+              <h2>About This Work</h2>
+              <p>A free-piston tunnel has no single "on" setting: every shot is defined by a set of fill pressures, a driver gas mixture, and a diaphragm burst pressure, and those have to be chosen so the reservoir behind the reflected shock lands on the flight condition you want to replicate. I built the workflow the team uses to get there, moving from fast equilibrium tools to slower, higher-fidelity ones.</p>
+              <p>NASA CEA sets the target: first the reservoir temperature and pressure that expand to Mach 10 at altitude, then the shock tube fill pressure and shock speed that create that reservoir. PITOT3 then sizes the driver. I swept the helium fraction until the reflected shock and the driver/driven interface were tailored (p<sub>5d</sub>/p<sub>5</sub> = 1), so the reservoir holds steady instead of being hit by extra reflected waves. Finally, L1d4 models the full facility with viscous losses and a 0.5 loss factor at the primary diaphragm. I first ran it as a fixed-volume shock tube to validate it against PITOT3 and checked mesh convergence (doubling the cells moved T<sub>5</sub> and P<sub>5</sub> by under 0.03%), then tuned the fill pressures until it held a 4700 K, 22 MPa reservoir for about 1.8 ms. The original target was 40 km; once the condition was tailored and simulated with real losses, the achievable reservoir corresponds to about 46 km. That reservoir is the input to the nozzle design.</p>
+            </div>
           </div>
         </div>
 
-        <div class="model-wrapper nz-case">
-          <h4 style="margin-top: 0;">Conical Nozzle Assembly</h4>
-          <model-viewer src="ConicalNozzleAssembly.glb" alt="3D model of the conical nozzle assembly" camera-controls auto-rotate shadow-intensity="1" exposure="1.2"></model-viewer>
-          <a href="ConicalNozzleSection.png" target="_blank" rel="noopener"><img src="ConicalNozzleSection.png" class="nz-section" alt="Section view of the conical nozzle assembly from the converging insert and throat to the sliding exit piece" loading="lazy"></a>
-          <div class="description">
-            <h2>About This Hardware</h2>
-            <p>This is the current nozzle assembly in SolidWorks, with a section view below the 3D model. Reading left to right: the converging section and its insert take the reservoir gas down to the ⌀8.5 mm throat, the 4140 throat piece carries the start of the divergence, the welded 6061 cone runs to joint B, and the heavy machined exit piece has the cylindrical outer surface that slides into the test-section seal.</p>
+        <div id="st-recoil" class="subtab-panel" role="tabpanel">
+          <p class="subtab-intro">Keeping the piston launch load out of the lab floor.</p>
+          <div class="model-wrapper nz-case">
+            <p class="section-label" style="margin-bottom: 0.25rem;">CASE STUDY</p>
+            <h4 style="margin-top: 0;">Driver Recoil and Force Mitigation</h4>
+            <div class="nz-stats">
+              <div><strong>~1.3 MN</strong><span>Axial load at piston launch</span></div>
+              <div><strong>225,000 lbf</strong><span>Same load, imperial</span></div>
+              <div><strong>2</strong><span>Hydraulic damping cylinders</span></div>
+            </div>
+            <!-- TODO: Sebastian's tube-motion simulation plots go here -->
+            <div class="description">
+              <h2>About This Work</h2>
+              <p>Launching the piston pushes back on the compression tube with roughly 1.3 MN (about 225,000 lbf). If the tubes were bolted rigidly to the floor, that load would go straight into the support structure on every shot. Instead, the driver, shock tube and nozzle slide axially as one assembly, inertial mass is added to that assembly so it accelerates less for the same impulse, and two hydraulic cylinders damp its motion.</p>
+              <p>The damping coefficient has to be tuned to the moving mass and to the force history of each run condition, otherwise the tube either rebounds or transfers large lateral loads into the supports. I simulated the tube motion by driving it with the pressure histories from L1d4, starting with the conservative case of no added inertial mass.</p>
+            </div>
           </div>
         </div>
 
-        <div class="model-wrapper nz-case">
-          <h4 style="margin-top: 0;">Structural Design of the Three-Piece Nozzle</h4>
-          <div class="nz-grid">
-            <table class="spec-table">
-              <thead><tr><th>Piece</th><th>Material</th><th>Length</th><th>Bore</th></tr></thead>
-              <tbody>
-                <tr><td>1 · Throat piece</td><td>4140 Q&amp;T</td><td>250 mm</td><td>⌀8.5 → ⌀61.1</td></tr>
-                <tr><td>2 · Cone</td><td>6061-T6, rolled &amp; welded</td><td>1036 mm</td><td>⌀61.1 → ⌀278.9</td></tr>
-                <tr><td>3 · Sliding exit</td><td>6061-T6, machined from bar</td><td>650 mm</td><td>⌀278.9 → ⌀415.6</td></tr>
-              </tbody>
-            </table>
-            <table class="spec-table">
-              <thead><tr><th>Check (1.0 MPa, FoS 4 on yield)</th><th>Result</th></tr></thead>
-              <tbody>
-                <tr><td>Cone hoop stress, UG-32(g)</td><td>17.5 MPa · FoS 5.9 on welded yield</td></tr>
-                <tr><td>Vacuum collapse, UG-33(f)</td><td>P<sub>cr</sub> ≈ 10 MPa vs 0.1 MPa</td></tr>
-                <tr><td>Joint B flange, Appendix 2</td><td>48.7 MPa · FoS 4.9</td></tr>
-                <tr><td>Joint B stud stress at max preload</td><td>175 MPa · FoS 4.15</td></tr>
-                <tr><td>Exit hoop stress, UG-27</td><td>17.0 MPa · FoS 14</td></tr>
-              </tbody>
-            </table>
+        <div id="st-nozzle" class="subtab-panel" role="tabpanel">
+          <p class="subtab-intro">Expanding the 4700 K reservoir to Mach 10: geometry, structure, flow validation and start time.</p>
+          <!-- ============ Hypersonic Nozzle Case Study ============ -->
+          <div class="model-wrapper nz-case">
+            <p class="section-label" style="margin-bottom: 0.25rem;">CASE STUDY</p>
+            <h4 style="margin-top: 0;">Hypersonic Nozzle: From Contoured to Conical</h4>
+            <svg class="nz-fig" viewBox="-120 -360 3760 840" role="img" aria-label="To-scale comparison of the earlier contoured nozzle and the current 6 degree conical nozzle">
+    <line x1="-80" y1="0" x2="3600" y2="0" class="nz-axis"/>
+    <polyline points="0,-12.4 51,-21.7 102,-33.9 152,-46.3 203,-58.2 254,-69.4 305,-79.7 356,-89.3 406,-98.3 457,-106.6 508,-114.5 559,-122.0 610,-129.0 660,-135.6 711,-141.9 762,-147.8 813,-153.5 864,-158.9 914,-164.0 965,-168.9 1016,-173.6 1067,-178.0 1118,-182.2 1168,-186.3 1219,-190.1 1270,-193.8 1321,-197.3 1372,-200.7 1422,-203.9 1473,-207.0 1524,-209.9 1575,-212.7 1626,-215.3 1676,-217.9 1727,-220.3 1778,-222.6 1829,-224.8 1880,-226.9 1930,-228.9 1981,-230.8 2032,-232.6 2083,-234.3 2134,-235.9 2184,-237.4 2235,-238.8 2286,-240.2 2337,-241.4 2388,-242.6 2438,-243.7 2489,-244.8 2540,-245.7 2591,-246.6 2642,-247.4 2692,-248.2 2743,-248.9 2794,-249.5 2845,-250.0 2896,-250.5 2946,-250.9 2997,-251.3 3048,-251.6 3099,-251.9 3150,-252.1 3200,-252.3 3251,-252.5 3302,-252.7 3353,-252.9 3404,-253.1 3454,-253.3 3505,-253.5 3505,-253.5" class="nz-old"/>
+    <polyline points="0,12.4 51,21.7 102,33.9 152,46.3 203,58.2 254,69.4 305,79.7 356,89.3 406,98.3 457,106.6 508,114.5 559,122.0 610,129.0 660,135.6 711,141.9 762,147.8 813,153.5 864,158.9 914,164.0 965,168.9 1016,173.6 1067,178.0 1118,182.2 1168,186.3 1219,190.1 1270,193.8 1321,197.3 1372,200.7 1422,203.9 1473,207.0 1524,209.9 1575,212.7 1626,215.3 1676,217.9 1727,220.3 1778,222.6 1829,224.8 1880,226.9 1930,228.9 1981,230.8 2032,232.6 2083,234.3 2134,235.9 2184,237.4 2235,238.8 2286,240.2 2337,241.4 2388,242.6 2438,243.7 2489,244.8 2540,245.7 2591,246.6 2642,247.4 2692,248.2 2743,248.9 2794,249.5 2845,250.0 2896,250.5 2946,250.9 2997,251.3 3048,251.6 3099,251.9 3150,252.1 3200,252.3 3251,252.5 3302,252.7 3353,252.9 3404,253.1 3454,253.3 3505,253.5 3505,253.5" class="nz-old"/>
+    <polygon points="0,-4.2 1936.4,-207.8 1936.4,207.8 0,4.2" class="nz-new"/>
+    <line x1="250" y1="-71" x2="250" y2="215" class="nz-joint"/><text x="250" y="255" class="nz-lab" text-anchor="middle">Joint A</text>
+  <line x1="1286.4" y1="-179" x2="1286.4" y2="215" class="nz-joint"/><text x="1286.4" y="255" class="nz-lab" text-anchor="middle">Joint B</text>
+
+    <text x="1966.4" y="-150" class="nz-lab">Exit ⌀415.6 mm</text>
+    <text x="3505" y="-280" class="nz-lab" text-anchor="end">Exit ⌀507 mm</text>
+    <line x1="0" y1="380" x2="1936.4" y2="380" class="nz-dim"/><text x="968.2" y="440" class="nz-lab" text-anchor="middle">1936 mm (current)</text>
+    <line x1="0" y1="300" x2="3505" y2="300" class="nz-dim nz-dim-old"/><text x="2700" y="355" class="nz-lab nz-lab-old" text-anchor="middle">3505 mm (earlier contour)</text>
+    <text x="0" y="100" class="nz-lab">Throat</text>
+  </svg>
+  <div class="nz-legend"><span><i class="nz-key nz-key-new"></i>Current: 6° cone, ⌀8.5 mm throat, area ratio 2390</span><span><i class="nz-key nz-key-old"></i>Earlier: Sivells MOC contour, ⌀24.7 mm throat</span></div>
+            <div class="description">
+              <h2>Two Generations of Nozzle</h2>
+              <p>The nozzle expands the reflected-shock reservoir gas (about 4700 K and 23 MPa in air) to the test condition. My first design was a contoured nozzle generated with Sivells' method-of-characteristics code (CONTUR, Fortran) with a boundary-layer correction, which I post-processed in MATLAB into SolidWorks-ready wall coordinates. That contour was 3.5 m long with a ⌀24.7 mm throat and was split into two Inconel throat pieces and three flanged steel sections.</p>
+              <p>For the current revision I moved to a 6° half-angle conical nozzle with a smaller ⌀8.5 mm throat. It reaches an area ratio of 2390 in 1.94 m, which gives Mach 10.0 on the axis in viscous CFD (an ideal γ = 1.4 gas would reach Mach 13.7), a little over half the length of the contour. A straight cone is also far simpler to build: rolled and welded plate instead of a machined Inconel contour. The figure above compares the two to scale.</p>
+            </div>
           </div>
-          <div class="description">
-            <h2>About This Design</h2>
-            <p>The divergent section is made in three pieces joined by spigot-and-counterbore joints. Each spigot face seats metal-to-metal on its counterbore floor, so the bores close flush with no cavity in the flow path, and an H7/g6 register holds concentricity to within 0.05 mm. The faces are sized to clamp Alloy 718 metal C-ring seals. The last piece has a ⌀440 mm hard-anodized cylindrical OD that gives 650 mm of sliding-seal surface into the test section.</p>
-            <p>I sized every part for 1.0 MPa internal pressure and full vacuum with a factor of safety of 4 on minimum yield, following ASME Section VIII Division 1 methods: UG-27 and UG-32 for the shells, UG-28/UG-33 for vacuum collapse, and Appendix 2 for flange stresses, rotation, and bolt loads. Welded regions use the as-welded 6061 strength, and the bolt preload covers ±25% torque scatter while keeping a residual contact force on the sealing land.</p>
+
+          <div class="model-wrapper nz-case">
+            <h4 style="margin-top: 0;">Conical Nozzle Assembly</h4>
+            <model-viewer src="ConicalNozzleAssembly.glb" alt="3D model of the conical nozzle assembly" camera-controls auto-rotate shadow-intensity="1" exposure="1.2"></model-viewer>
+            <a href="ConicalNozzleSection.png" target="_blank" rel="noopener"><img src="ConicalNozzleSection.png" class="nz-section" alt="Section view of the conical nozzle assembly from the converging insert and throat to the sliding exit piece" loading="lazy"></a>
+            <div class="description">
+              <h2>About This Hardware</h2>
+              <p>This is the current nozzle assembly in SolidWorks, with a section view below the 3D model. Reading left to right: the converging section and its insert take the reservoir gas down to the ⌀8.5 mm throat, the 4140 throat piece carries the start of the divergence, the welded 6061 cone runs to joint B, and the heavy machined exit piece has the cylindrical outer surface that slides into the test-section seal.</p>
+            </div>
+          </div>
+
+          <div class="model-wrapper nz-case">
+            <h4 style="margin-top: 0;">Structural Design of the Three-Piece Nozzle</h4>
+            <div class="nz-grid">
+              <table class="spec-table">
+                <thead><tr><th>Piece</th><th>Material</th><th>Length</th><th>Bore</th></tr></thead>
+                <tbody>
+                  <tr><td>1 · Throat piece</td><td>4140 Q&amp;T</td><td>250 mm</td><td>⌀8.5 → ⌀61.1</td></tr>
+                  <tr><td>2 · Cone</td><td>6061-T6, rolled &amp; welded</td><td>1036 mm</td><td>⌀61.1 → ⌀278.9</td></tr>
+                  <tr><td>3 · Sliding exit</td><td>6061-T6, machined from bar</td><td>650 mm</td><td>⌀278.9 → ⌀415.6</td></tr>
+                </tbody>
+              </table>
+              <table class="spec-table">
+                <thead><tr><th>Check (1.0 MPa, FoS 4 on yield)</th><th>Result</th></tr></thead>
+                <tbody>
+                  <tr><td>Cone hoop stress, UG-32(g)</td><td>17.5 MPa · FoS 5.9 on welded yield</td></tr>
+                  <tr><td>Vacuum collapse, UG-33(f)</td><td>P<sub>cr</sub> ≈ 10 MPa vs 0.1 MPa</td></tr>
+                  <tr><td>Joint B flange, Appendix 2</td><td>48.7 MPa · FoS 4.9</td></tr>
+                  <tr><td>Joint B stud stress at max preload</td><td>175 MPa · FoS 4.15</td></tr>
+                  <tr><td>Exit hoop stress, UG-27</td><td>17.0 MPa · FoS 14</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="description">
+              <h2>About This Design</h2>
+              <p>The divergent section is made in three pieces joined by spigot-and-counterbore joints. Each spigot face seats metal-to-metal on its counterbore floor, so the bores close flush with no cavity in the flow path, and an H7/g6 register holds concentricity to within 0.05 mm. The faces are sized to clamp Alloy 718 metal C-ring seals. The last piece has a ⌀440 mm hard-anodized cylindrical OD that gives 650 mm of sliding-seal surface into the test section.</p>
+              <p>I sized every part for 1.0 MPa internal pressure and full vacuum with a factor of safety of 4 on minimum yield, following ASME Section VIII Division 1 methods: UG-27 and UG-32 for the shells, UG-28/UG-33 for vacuum collapse, and Appendix 2 for flange stresses, rotation, and bolt loads. Welded regions use the as-welded 6061 strength, and the bolt preload covers ±25% torque scatter while keeping a residual contact force on the sealing land.</p>
+            </div>
+          </div>
+
+          <div class="model-wrapper nz-case">
+            <h4 style="margin-top: 0;">Flow Validation: Quasi-1D vs. Viscous CFD</h4>
+            <div class="nz-stats">
+              <div><strong>10.01</strong><span>Exit axis Mach (Eilmer)</span></div>
+              <div><strong>306 mm</strong><span>Core flow ⌀ (Mach ±1%)</span></div>
+              <div><strong>30.5 mm</strong><span>Exit boundary layer δ<sub>99</sub></span></div>
+              <div><strong>0.979</strong><span>Quasi-1D / CFD calibration</span></div>
+            </div>
+            <div class="nz-plots">
+              <a href="NozzleMachVsAreaRatio.png" target="_blank" rel="noopener"><img src="NozzleMachVsAreaRatio.png" alt="Mach number vs area ratio: nenzf1d compared with Eilmer CFD axis, using geometric and effective area ratio" loading="lazy"></a>
+              <a href="NozzleAxisNenzf1dVsCFD.png" target="_blank" rel="noopener"><img src="NozzleAxisNenzf1dVsCFD.png" alt="Temperature, pressure and species mass fractions along the axis: nenzf1d compared with CFD" loading="lazy"></a>
+              <a href="NozzleBoundaryLayer.png" target="_blank" rel="noopener"><img src="NozzleBoundaryLayer.png" alt="Boundary layer thickness and displacement thickness along the nozzle against wall radius" loading="lazy"></a>
+              <a href="NozzleExitProfiles.png" target="_blank" rel="noopener"><img src="NozzleExitProfiles.png" alt="Exit plane radial profiles of Mach, pressure, temperature, velocity, pitot pressure and species" loading="lazy"></a>
+            </div>
+            <div class="description">
+              <h2>About These Results</h2>
+              <p>I checked the conical contour two ways. First, a quasi-1D finite-rate chemistry model (nenzf1d) expands the 4700 K reservoir gas through the nozzle with no boundary layer: it predicts Mach 10.3 at the 2390 area ratio, with the chemistry freezing early so the exit carries about 7% NO by mass. Second, a viscous axisymmetric simulation in Eilmer resolves the wall boundary layer. Along the axis the two agree closely in temperature, pressure, and species, and the CFD exit Mach is 10.01.</p>
+              <p>The difference comes from the boundary layer. It grows to 30.5 mm (15% of the exit radius) with a 13.7 mm displacement thickness, which cuts the effective area ratio from 2390 to 2083. Plotted against that effective area ratio, the CFD axis Mach falls right on the nenzf1d curve, so a 0.979 calibration factor lets the much faster quasi-1D model stand in for CFD when I iterate on operating conditions. At the exit the uniform core is 306 mm across within ±1% Mach, and 354 mm within ±5% pitot pressure, which sets the usable test-model size. Click any plot to enlarge it.</p>
+            </div>
+          </div>
+
+          <div class="model-wrapper nz-case">
+            <h4 style="margin-top: 0;">Nozzle Start Time and Usable Test Time</h4>
+            <svg class="nz-fig" viewBox="-560 -40 3200 420" role="img" aria-label="Timeline of supply window and steady flow at the nozzle exit after shock reflection">
+    <text x="-30" y="55" class="nz-lab" text-anchor="end">Reservoir (P5)</text>
+    <rect x="0" y="20" width="1500" height="55" class="nz-bar"/>
+    <rect x="1500" y="20" width="300" height="55" class="nz-bar nz-bar-soft"/>
+    <text x="-30" y="175" class="nz-lab" text-anchor="end">Nozzle exit</text>
+    <rect x="0" y="140" width="770" height="55" class="nz-bar-start"/>
+    <text x="385" y="177" class="nz-lab nz-lab-dark" text-anchor="middle">starting transient</text>
+    <rect x="770" y="140" width="1320" height="55" class="nz-bar"/>
+    <rect x="2090" y="140" width="300" height="55" class="nz-bar nz-bar-soft"/>
+    <line x1="0" y1="250" x2="2600" y2="250" class="nz-axis"/>
+    <line x1="0" y1="250" x2="0" y2="262" class="nz-axis"/><text x="0" y="300" class="nz-lab" text-anchor="middle">0</text><line x1="500" y1="250" x2="500" y2="262" class="nz-axis"/><text x="500" y="300" class="nz-lab" text-anchor="middle">0.5</text><line x1="1000" y1="250" x2="1000" y2="262" class="nz-axis"/><text x="1000" y="300" class="nz-lab" text-anchor="middle">1</text><line x1="1500" y1="250" x2="1500" y2="262" class="nz-axis"/><text x="1500" y="300" class="nz-lab" text-anchor="middle">1.5</text><line x1="2000" y1="250" x2="2000" y2="262" class="nz-axis"/><text x="2000" y="300" class="nz-lab" text-anchor="middle">2</text><line x1="2500" y1="250" x2="2500" y2="262" class="nz-axis"/><text x="2500" y="300" class="nz-lab" text-anchor="middle">2.5</text>
+    <text x="2600" y="360" class="nz-lab" text-anchor="end">ms after shock reflection</text>
+  </svg>
+            <div class="nz-legend"><span><i class="nz-key nz-key-bar"></i>Steady flow (lighter: 1.5 to 1.8 ms supply window range)</span><span><i class="nz-key nz-key-start"></i>Nozzle starting transient</span></div>
+            <div class="description">
+              <h2>About This Analysis</h2>
+              <p>A long, high-area-ratio nozzle has to finish starting before the reservoir runs out, so I estimated how much test time survives the start. Following Smith (1966), the start is controlled by an unsteady expansion wave whose tail travels at u − a; I integrated t = ∫dx / [a(M − 1)] numerically along the actual 1936 mm cone. The start clears the exit about 0.77 ms after shock reflection.</p>
+              <p>The key result is that the end of the supply window also takes time to reach the exit, travelling at u + a (about 0.59 ms). Because those two speeds are close at hypersonic Mach numbers, the start costs only about 0.18 ms of test time instead of the full 0.77 ms. From a 1.5 to 1.8 ms supply window, the inviscid estimate is 1.3 to 1.65 ms of usable flow at the exit; with a viscous allowance I use 1.0 to 1.5 ms as the planning budget. The Eilmer boundary layer (30.5 mm thick at the exit, 13.7 mm displacement thickness) barely changes this inviscid result: integrating along the effective core area instead of the wall moves the start by less than 0.01 ms. Its real cost is the time the boundary layer takes to settle along 1.94 m of wall, which is why the planning budget keeps a viscous allowance. The next step is an unsteady Eilmer simulation of the start itself, checked against an exit pitot probe on the first shots.</p>
+            </div>
           </div>
         </div>
 
-        <div class="model-wrapper nz-case">
-          <h4 style="margin-top: 0;">Flow Validation: Quasi-1D vs. Viscous CFD</h4>
-          <div class="nz-stats">
-            <div><strong>10.01</strong><span>Exit axis Mach (Eilmer)</span></div>
-            <div><strong>306 mm</strong><span>Core flow ⌀ (Mach ±1%)</span></div>
-            <div><strong>30.5 mm</strong><span>Exit boundary layer δ<sub>99</sub></span></div>
-            <div><strong>0.979</strong><span>Quasi-1D / CFD calibration</span></div>
-          </div>
-          <div class="nz-plots">
-            <a href="NozzleMachVsAreaRatio.png" target="_blank" rel="noopener"><img src="NozzleMachVsAreaRatio.png" alt="Mach number vs area ratio: nenzf1d compared with Eilmer CFD axis, using geometric and effective area ratio" loading="lazy"></a>
-            <a href="NozzleAxisNenzf1dVsCFD.png" target="_blank" rel="noopener"><img src="NozzleAxisNenzf1dVsCFD.png" alt="Temperature, pressure and species mass fractions along the axis: nenzf1d compared with CFD" loading="lazy"></a>
-            <a href="NozzleBoundaryLayer.png" target="_blank" rel="noopener"><img src="NozzleBoundaryLayer.png" alt="Boundary layer thickness and displacement thickness along the nozzle against wall radius" loading="lazy"></a>
-            <a href="NozzleExitProfiles.png" target="_blank" rel="noopener"><img src="NozzleExitProfiles.png" alt="Exit plane radial profiles of Mach, pressure, temperature, velocity, pitot pressure and species" loading="lazy"></a>
-          </div>
-          <div class="description">
-            <h2>About These Results</h2>
-            <p>I checked the conical contour two ways. First, a quasi-1D finite-rate chemistry model (nenzf1d) expands the 4700 K reservoir gas through the nozzle with no boundary layer: it predicts Mach 10.3 at the 2390 area ratio, with the chemistry freezing early so the exit carries about 7% NO by mass. Second, a viscous axisymmetric simulation in Eilmer resolves the wall boundary layer. Along the axis the two agree closely in temperature, pressure, and species, and the CFD exit Mach is 10.01.</p>
-            <p>The difference comes from the boundary layer. It grows to 30.5 mm (15% of the exit radius) with a 13.7 mm displacement thickness, which cuts the effective area ratio from 2390 to 2083. Plotted against that effective area ratio, the CFD axis Mach falls right on the nenzf1d curve, so a 0.979 calibration factor lets the much faster quasi-1D model stand in for CFD when I iterate on operating conditions. At the exit the uniform core is 306 mm across within ±1% Mach, and 354 mm within ±5% pitot pressure, which sets the usable test-model size. Click any plot to enlarge it.</p>
+        <div id="st-structures" class="subtab-panel" role="tabpanel">
+          <p class="subtab-intro">Making sure every pressure-holding part survives repeated shock loading.</p>
+          <div class="model-wrapper">
+            <h4 style="margin-top: 0;">Structural Survivability: Driver Tube &amp; Shock Tube Flange FEA</h4>
+            <iframe src="DriverFEA.png" class="pdf-viewer" title="Driver tube FEA result"></iframe>
+            <div class="description">
+              <h2>About This Analysis</h2>
+              <p>Every part that holds pressure in the tunnel has to survive repeated shock loading. The facility is designed for a max pressure of 25 MPa, and since the loading is dynamic I applied a dynamic load factor of 2, so each part is checked at 50 MPa against a target factor of safety of 4 on yield. For each part I predicted the stresses by hand first, built the simplest SolidWorks Simulation model that could be checked against that prediction, and only then trusted the model where hand calculations can't reach.</p>
+              <ul>
+                <li><strong>Driver tube (shown above):</strong> quarter-symmetry model with 50 MPa on the bore and a 700 kN end load. The reaction force and bore stresses matched my hand calculations, and adding the threads back in changed the result negligibly. The FEA gives a factor of safety of 4.6, above the target of 4.</li>
+                <li><strong>Shock tube flange joint:</strong> a 36&deg; cyclic-symmetry sector of two 4140 Q&amp;T flanges with preloaded 1-8 UNC studs, frictionless contact and the C-ring seal load. I calibrated the model against the Lam&eacute; thick-cylinder solution (within 8%) and refined the mesh until the hub fillet peak converged (232 &rarr; 257 &rarr; 256 MPa).</li>
+                <li><strong>Geometry iteration:</strong> I tested three hub designs. A tapered hub with a smaller R3 fillet raised the fillet peak from 256 to 361 MPa, so I kept a straight hub with R9 fillets on a &#8960;217 bolt circle, the largest fillet that still clears a socket on the nuts.</li>
+                <li><strong>Joint behaviour:</strong> at 50 MPa the seal land stays clamped with 0.67 of the pressure end load in reserve (the hand calculation assumed 0.5), and the flange faces close 0.205 mm of a 0.30 mm clearance.</li>
+                <li><strong>Closing the margin:</strong> where the model fell below 4, the limit was material rather than geometry. I specified ASTM A354 BD studs, raising the stud factor of safety from 3.5 to 4.4 with no change in size or preload, and wrote a flange purchase spec requiring certified yield tested at the actual forging section, with 4340 Q&amp;T as the fallback.</li>
+              </ul>
+            </div>
           </div>
         </div>
 
-        <div class="model-wrapper nz-case">
-          <h4 style="margin-top: 0;">Nozzle Start Time and Usable Test Time</h4>
-          <svg class="nz-fig" viewBox="-560 -40 3200 420" role="img" aria-label="Timeline of supply window and steady flow at the nozzle exit after shock reflection">
-  <text x="-30" y="55" class="nz-lab" text-anchor="end">Reservoir (P5)</text>
-  <rect x="0" y="20" width="1500" height="55" class="nz-bar"/>
-  <rect x="1500" y="20" width="300" height="55" class="nz-bar nz-bar-soft"/>
-  <text x="-30" y="175" class="nz-lab" text-anchor="end">Nozzle exit</text>
-  <rect x="0" y="140" width="770" height="55" class="nz-bar-start"/>
-  <text x="385" y="177" class="nz-lab nz-lab-dark" text-anchor="middle">starting transient</text>
-  <rect x="770" y="140" width="1320" height="55" class="nz-bar"/>
-  <rect x="2090" y="140" width="300" height="55" class="nz-bar nz-bar-soft"/>
-  <line x1="0" y1="250" x2="2600" y2="250" class="nz-axis"/>
-  <line x1="0" y1="250" x2="0" y2="262" class="nz-axis"/><text x="0" y="300" class="nz-lab" text-anchor="middle">0</text><line x1="500" y1="250" x2="500" y2="262" class="nz-axis"/><text x="500" y="300" class="nz-lab" text-anchor="middle">0.5</text><line x1="1000" y1="250" x2="1000" y2="262" class="nz-axis"/><text x="1000" y="300" class="nz-lab" text-anchor="middle">1</text><line x1="1500" y1="250" x2="1500" y2="262" class="nz-axis"/><text x="1500" y="300" class="nz-lab" text-anchor="middle">1.5</text><line x1="2000" y1="250" x2="2000" y2="262" class="nz-axis"/><text x="2000" y="300" class="nz-lab" text-anchor="middle">2</text><line x1="2500" y1="250" x2="2500" y2="262" class="nz-axis"/><text x="2500" y="300" class="nz-lab" text-anchor="middle">2.5</text>
-  <text x="2600" y="360" class="nz-lab" text-anchor="end">ms after shock reflection</text>
-</svg>
-          <div class="nz-legend"><span><i class="nz-key nz-key-bar"></i>Steady flow (lighter: 1.5 to 1.8 ms supply window range)</span><span><i class="nz-key nz-key-start"></i>Nozzle starting transient</span></div>
-          <div class="description">
-            <h2>About This Analysis</h2>
-            <p>A long, high-area-ratio nozzle has to finish starting before the reservoir runs out, so I estimated how much test time survives the start. Following Smith (1966), the start is controlled by an unsteady expansion wave whose tail travels at u − a; I integrated t = ∫dx / [a(M − 1)] numerically along the actual 1936 mm cone. The start clears the exit about 0.77 ms after shock reflection.</p>
-            <p>The key result is that the end of the supply window also takes time to reach the exit, travelling at u + a (about 0.59 ms). Because those two speeds are close at hypersonic Mach numbers, the start costs only about 0.18 ms of test time instead of the full 0.77 ms. From a 1.5 to 1.8 ms supply window, the inviscid estimate is 1.3 to 1.65 ms of usable flow at the exit; with a viscous allowance I use 1.0 to 1.5 ms as the planning budget. The Eilmer boundary layer (30.5 mm thick at the exit, 13.7 mm displacement thickness) barely changes this inviscid result: integrating along the effective core area instead of the wall moves the start by less than 0.01 ms. Its real cost is the time the boundary layer takes to settle along 1.94 m of wall, which is why the planning budget keeps a viscous allowance. The next step is an unsteady Eilmer simulation of the start itself, checked against an exit pitot probe on the first shots.</p>
-          </div>
+        <div id="st-report" class="subtab-panel" role="tabpanel">
+          <div class="model-wrapper">
+            <h4 style="margin-top: 0;">Spring 2026 Design Report</h4>
+            <iframe src="FPRSTSpringReport.pdf" class="pdf-viewer" title="Shock Tunnel Spring Report PDF Document"></iframe>
+            <div class="description">
+              <h2>About This Document</h2>
+              <p>This document details the entire design process and considerations involved in the conceptual phase of the project as of Spring 2026. Since then, much has been changed and improved upon these designs over the summer. </p>
+              <a href="FPRSTSpringReport.pdf" class="btn btn-ghost" download>Download Design Report (PDF)</a>
+            </div>
         </div>
 
-        <div class="model-wrapper">
-          <h4 style="margin-top: 0;">Structural Survivability: Driver Tube &amp; Shock Tube Flange FEA</h4>
-          <iframe src="DriverFEA.png" class="pdf-viewer" title="Driver tube FEA result"></iframe>
-          <div class="description">
-            <h2>About This Analysis</h2>
-            <p>Every part that holds pressure in the tunnel has to survive repeated shock loading. The facility is designed for a max pressure of 25 MPa, and since the loading is dynamic I applied a dynamic load factor of 2, so each part is checked at 50 MPa against a target factor of safety of 4 on yield. For each part I predicted the stresses by hand first, built the simplest SolidWorks Simulation model that could be checked against that prediction, and only then trusted the model where hand calculations can't reach.</p>
-            <ul>
-              <li><strong>Driver tube (shown above):</strong> quarter-symmetry model with 50 MPa on the bore and a 700 kN end load. The reaction force and bore stresses matched my hand calculations, and adding the threads back in changed the result negligibly. The FEA gives a factor of safety of 4.6, above the target of 4.</li>
-              <li><strong>Shock tube flange joint:</strong> a 36&deg; cyclic-symmetry sector of two 4140 Q&amp;T flanges with preloaded 1-8 UNC studs, frictionless contact and the C-ring seal load. I calibrated the model against the Lam&eacute; thick-cylinder solution (within 8%) and refined the mesh until the hub fillet peak converged (232 &rarr; 257 &rarr; 256 MPa).</li>
-              <li><strong>Geometry iteration:</strong> I tested three hub designs. A tapered hub with a smaller R3 fillet raised the fillet peak from 256 to 361 MPa, so I kept a straight hub with R9 fillets on a &#8960;217 bolt circle, the largest fillet that still clears a socket on the nuts.</li>
-              <li><strong>Joint behaviour:</strong> at 50 MPa the seal land stays clamped with 0.67 of the pressure end load in reserve (the hand calculation assumed 0.5), and the flange faces close 0.205 mm of a 0.30 mm clearance.</li>
-              <li><strong>Closing the margin:</strong> where the model fell below 4, the limit was material rather than geometry. I specified ASTM A354 BD studs, raising the stud factor of safety from 3.5 to 4.4 with no change in size or preload, and wrote a flange purchase spec requiring certified yield tested at the actual forging section, with 4340 Q&amp;T as the fallback.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="model-wrapper">
-          <h4 style="margin-top: 0;">Spring 2026 Design Report</h4>
-          <iframe src="FPRSTSpringReport.pdf" class="pdf-viewer" title="Shock Tunnel Spring Report PDF Document"></iframe>
-          <div class="description">
-            <h2>About This Document</h2>
-            <p>This document details the entire design process and considerations involved in the conceptual phase of the project as of Spring 2026. Since then, much has been changed and improved upon these designs over the summer. </p>
-            <a href="FPRSTSpringReport.pdf" class="btn btn-ghost" download>Download Design Report (PDF)</a>
-          </div>
-        </div>
       </div>
 
     </div>
@@ -816,6 +925,13 @@
     // Show the current tab, and add an "active" class to the button that opened the tab
     document.getElementById(projectName).classList.add("active");
     evt.currentTarget.classList.add("active");
+  }
+  function openSubTab(evt, panelId) {
+    const group = evt.currentTarget.closest('.tab-content');
+    group.querySelectorAll('.subtab-panel').forEach(p => p.classList.remove('active'));
+    group.querySelectorAll('.subtab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(panelId).classList.add('active');
+    evt.currentTarget.classList.add('active');
   }
 </script>
 <script src="js/script.js"></script>
