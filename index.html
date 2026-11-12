@@ -326,6 +326,7 @@
   .nz-plots { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   .nz-plots img { width: 100%; height: auto; display: block; background: #ffffff; border-radius: 4px; border: 1px solid var(--border-color); }
   @media (max-width: 600px) { .nz-plots { grid-template-columns: 1fr; } }
+  .nz-section { width: 100%; height: auto; display: block; margin-top: 1rem; border-radius: 4px; border: 1px solid var(--border-color); }
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(5px); }
     to { opacity: 1; transform: translateY(0); }
@@ -605,6 +606,16 @@
         </div>
 
         <div class="model-wrapper nz-case">
+          <h4 style="margin-top: 0;">Conical Nozzle Assembly</h4>
+          <model-viewer src="ConicalNozzleAssembly.glb" alt="3D model of the conical nozzle assembly" camera-controls auto-rotate shadow-intensity="1" exposure="1.2"></model-viewer>
+          <a href="ConicalNozzleSection.png" target="_blank" rel="noopener"><img src="ConicalNozzleSection.png" class="nz-section" alt="Section view of the conical nozzle assembly from the converging insert and throat to the sliding exit piece" loading="lazy"></a>
+          <div class="description">
+            <h2>About This Hardware</h2>
+            <p>This is the current nozzle assembly in SolidWorks, with a section view below the 3D model. Reading left to right: the converging section and its insert take the reservoir gas down to the ⌀8.5 mm throat, the 4140 throat piece carries the start of the divergence, the welded 6061 cone runs to joint B, and the heavy machined exit piece has the cylindrical outer surface that slides into the test-section seal.</p>
+          </div>
+        </div>
+
+        <div class="model-wrapper nz-case">
           <h4 style="margin-top: 0;">Structural Design of the Three-Piece Nozzle</h4>
           <div class="nz-grid">
             <table class="spec-table">
@@ -673,7 +684,7 @@
           <div class="description">
             <h2>About This Analysis</h2>
             <p>A long, high-area-ratio nozzle has to finish starting before the reservoir runs out, so I estimated how much test time survives the start. Following Smith (1966), the start is controlled by an unsteady expansion wave whose tail travels at u − a; I integrated t = ∫dx / [a(M − 1)] numerically along the actual 1936 mm cone. The start clears the exit about 0.77 ms after shock reflection.</p>
-            <p>The key result is that the end of the supply window also takes time to reach the exit, travelling at u + a (about 0.59 ms). Because those two speeds are close at hypersonic Mach numbers, the start costs only about 0.18 ms of test time instead of the full 0.77 ms. From a 1.5 to 1.8 ms supply window, the inviscid estimate is 1.3 to 1.65 ms of usable flow at the exit; with a viscous allowance I use 1.0 to 1.5 ms as the planning budget. The next step is an unsteady axisymmetric Navier–Stokes simulation of the start, checked against an exit pitot probe on the first shots.</p>
+            <p>The key result is that the end of the supply window also takes time to reach the exit, travelling at u + a (about 0.59 ms). Because those two speeds are close at hypersonic Mach numbers, the start costs only about 0.18 ms of test time instead of the full 0.77 ms. From a 1.5 to 1.8 ms supply window, the inviscid estimate is 1.3 to 1.65 ms of usable flow at the exit; with a viscous allowance I use 1.0 to 1.5 ms as the planning budget. The Eilmer boundary layer (30.5 mm thick at the exit, 13.7 mm displacement thickness) barely changes this inviscid result: integrating along the effective core area instead of the wall moves the start by less than 0.01 ms. Its real cost is the time the boundary layer takes to settle along 1.94 m of wall, which is why the planning budget keeps a viscous allowance. The next step is an unsteady Eilmer simulation of the start itself, checked against an exit pitot probe on the first shots.</p>
           </div>
         </div>
 
