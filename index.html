@@ -602,6 +602,7 @@
           <button class="subtab-btn" onclick="openSubTab(event, 'st-recoil')" role="tab">Driver &amp; Recoil</button>
           <button class="subtab-btn" onclick="openSubTab(event, 'st-nozzle')" role="tab">Nozzle</button>
           <button class="subtab-btn" onclick="openSubTab(event, 'st-structures')" role="tab">Structures</button>
+          <button class="subtab-btn" onclick="openSubTab(event, 'st-dumptank')" role="tab">Dump Tank FEA</button>
           <button class="subtab-btn" onclick="openSubTab(event, 'st-report')" role="tab">Report</button>
         </div>
 
@@ -822,6 +823,62 @@
                 <li><strong>Joint behaviour:</strong> at 50 MPa the seal land stays clamped with 0.67 of the pressure end load in reserve (the hand calculation assumed 0.5), and the flange faces close 0.205 mm of a 0.30 mm clearance.</li>
                 <li><strong>Closing the margin:</strong> where the model fell below 4, the limit was material rather than geometry. I specified ASTM A354 BD studs, raising the stud factor of safety from 3.5 to 4.4 with no change in size or preload, and wrote a flange purchase spec requiring certified yield tested at the actual forging section, with 4340 Q&amp;T as the fallback.</li>
               </ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="st-dumptank" class="subtab-panel" role="tabpanel">
+          <p class="subtab-intro">Proving the new dump tank design survives its hydrotest and a full vacuum without yielding or collapsing.</p>
+          <div class="model-wrapper nz-case">
+            <p class="section-label" style="margin-bottom: 0.25rem;">CASE STUDY</p>
+            <h4 style="margin-top: 0;">Dump Tank Structural FEA: Hydrotest and Vacuum Buckling</h4>
+            <div class="nz-stats">
+              <div><strong>~9 ksi</strong><span>Peak real stress at hydrotest</span></div>
+              <div><strong>FoS 3&ndash;4</strong><span>Minimum vs yield at 24.2 psi</span></div>
+              <div><strong>FoS 5&ndash;6</strong><span>At 15 psig operation</span></div>
+              <div><strong>51.9</strong><span>Lowest buckling load factor (min 3)</span></div>
+            </div>
+            <div class="nz-grid">
+              <table class="spec-table">
+                <thead><tr><th>Study 1: static, 24.2 psi</th><th>von Mises</th><th>FoS</th><th>Result</th></tr></thead>
+                <tbody>
+                  <tr><td>Upper shell (&#8540; in)</td><td>~1&ndash;2 ksi</td><td>&ge; 5</td><td>Pass</td></tr>
+                  <tr><td>Lower shell / N1 crotch</td><td>~2&ndash;4 ksi</td><td>&ge; 5</td><td>Pass</td></tr>
+                  <tr><td>Bottom plate</td><td>~6&ndash;9 ksi</td><td>~4</td><td>Pass</td></tr>
+                  <tr><td>Top head / N2 ring</td><td>~5&ndash;8 ksi</td><td>~3&ndash;4</td><td>Pass</td></tr>
+                  <tr><td>Anchor bolt hole edge</td><td>41.9 ksi</td><td>0.76</td><td>Fixture artifact</td></tr>
+                </tbody>
+              </table>
+              <table class="spec-table">
+                <thead><tr><th>Study 2: vacuum buckling</th><th>Load factor</th><th>Collapse at</th></tr></thead>
+                <tbody>
+                  <tr><td>Mode 1</td><td>51.9</td><td>~760 psi</td></tr>
+                  <tr><td>Mode 2 (mode 1 rotated)</td><td>52.7</td><td>~775 psi</td></tr>
+                  <tr><td>Mode 3</td><td>67.2</td><td>~990 psi</td></tr>
+                  <tr><td>Mode 4 (mode 3 rotated)</td><td>68.7</td><td>~1,010 psi</td></tr>
+                  <tr><td>Required minimum</td><td>3.0</td><td>44 psi</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="nz-plots" style="margin-top: 1rem;">
+              <a href="DumpTankVonMises.png" target="_blank" rel="noopener"><img src="DumpTankVonMises.png" alt="von Mises stress at 24.2 psi on a 0 to 15 ksi scale; the shell stays in the low range and the 41.9 ksi max annotation sits on an anchor bolt hole" loading="lazy"></a>
+              <a href="DumpTankVonMisesSection.png" target="_blank" rel="noopener"><img src="DumpTankVonMisesSection.png" alt="Transparent view of von Mises stress showing the bottom plate and the N2 neck ring carrying the highest real stresses" loading="lazy"></a>
+              <a href="DumpTankFOS.png" target="_blank" rel="noopener"><img src="DumpTankFOS.png" alt="Factor of safety against yield, side view, with nearly the whole tank above 5" loading="lazy"></a>
+              <a href="DumpTankFOSUnderside.png" target="_blank" rel="noopener"><img src="DumpTankFOSUnderside.png" alt="Factor of safety on the underside of the bottom plate, lowest only at the rigidly fixed anchor holes" loading="lazy"></a>
+              <a href="DumpTankBucklingMode1.png" target="_blank" rel="noopener"><img src="DumpTankBucklingMode1.png" alt="Buckling mode 1, load factor 51.9: lengthwise lobes in the thin upper shell peaking just above the shell course seam" loading="lazy"></a>
+              <a href="DumpTankBucklingMode3.png" target="_blank" rel="noopener"><img src="DumpTankBucklingMode3.png" alt="Buckling mode 3, load factor 67.2: more, smaller lobes confined to the upper three-eighths inch course" loading="lazy"></a>
+            </div>
+            <div class="description">
+              <h2>About This Analysis</h2>
+              <p>The dump tank catches the test gas after every shot. The new design is a 48 in ID carbon-steel cylinder with flat plate heads, 12 ft tall and 4.00 m&sup3;, rated for 15 psig internal and full vacuum. It has a &#8541; in lower shell course that carries the NPS 36 test-section opening (N1), a &#8540; in upper course, a 1 in bottom plate that doubles as the anchor plate, and a 1&#8539; in top plate. I set up two SolidWorks Simulation studies to cover the tank body's worst cases.</p>
+              <ul>
+                <li><strong>Load cases:</strong> a linear static study at 24.2 psi (the 19.5 psig hydrotest plus the water head at the floor) is the highest stress the tank will ever see, 60% above operation, and because it is linear it also covers vacuum stresses with the sign flipped. A linear buckling study at 14.7 psi external checks the one failure the static study can't: the shell collapsing inward under full vacuum.</li>
+                <li><strong>Model:</strong> a multibody FEA configuration of the shell courses, heads, anchor plate and nozzle necks, with flanges, relief hardware and small ports suppressed, bonded caps standing in for the blind flange and the relief plate, and &frac14; in fillets at the head and nozzle corners to avoid stress singularities. The N1 neck end and the 16 anchor holes are fixed. Second-order elements with 0.15 in mesh controls at the nozzle intersections and head corners.</li>
+                <li><strong>Calibration:</strong> before trusting the model I predicted every critical region by hand (shell hoop stress, clamped and simply supported bounds for both flat heads, nozzle crotch stress and the vacuum collapse pressure), so the FEA results could be checked against an expected range.</li>
+                <li><strong>Static result:</strong> the tank passes with wide margin. The highest real stress is about 9 ksi in the bottom plate, giving a minimum factor of safety of about 3&ndash;4 at hydrotest and 5&ndash;6 at the 15 psig operating pressure, against required minimums of 1.19 (general) and 1.0 (local). Both flat plates come in below the hand-calc range, as expected: the anchored 66 in plate clamps the bottom head's edge, and the N2 neck and seat ring stiffen the top head's center. The 41.9 ksi peak sits on an anchor bolt hole whose bore is held perfectly rigid by the fixture, so it is excluded as a boundary-condition artifact. The run used Plain Carbon Steel (32 ksi yield), so the SA-516-70 plate (38 ksi) would raise every factor of safety by about 19%.</li>
+                <li><strong>Buckling result:</strong> the lowest load factor is 51.9, so the shell would not collapse until about 760 psi external, more than 50 times a full vacuum. The mode shapes are what a vacuum vessel should show: the thin upper course dents inward in lengthwise lobes while the thick lower course, flat heads and N1 neck barely move, confirming they act as stiffeners. That is about 5&times; my simple hand calculation (load factor &asymp; 10), which treated the full 131 in as &#8540; in shell; the restraint from the thick lower course and top plate cuts the effective buckling length to about 58 in. Even with a typical 0.8 knockdown for real-world out-of-roundness, the load factor stays above 40.</li>
+              </ul>
+              <p>Values are read from the color plots rather than probed. Click any plot to enlarge it.</p>
             </div>
           </div>
         </div>
